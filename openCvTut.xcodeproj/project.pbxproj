@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3A25E0D420545F0B00D70921 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A25E0D320545F0B00D70921 /* main.cpp */; };
+		3AEEB62F20568E28008D04FA /* Fruit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AEEB62D20568E28008D04FA /* Fruit.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,10 @@
 /* Begin PBXFileReference section */
 		3A25E0D020545F0B00D70921 /* openCvTut */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openCvTut; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A25E0D320545F0B00D70921 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3A25E0EF2054676500D70921 /* cv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cv.h; path = ../../../../../usr/local/Cellar/opencv/3.4.0_1/include/opencv/cv.h; sourceTree = "<group>"; };
+		3A25E0F02054676600D70921 /* highgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = highgui.h; path = ../../../../../usr/local/Cellar/opencv/3.4.0_1/include/opencv/highgui.h; sourceTree = "<group>"; };
+		3AEEB62D20568E28008D04FA /* Fruit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Fruit.cpp; sourceTree = "<group>"; };
+		3AEEB62E20568E28008D04FA /* Fruit.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Fruit.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +46,8 @@
 		3A25E0C720545F0B00D70921 = {
 			isa = PBXGroup;
 			children = (
+				3A25E0EF2054676500D70921 /* cv.h */,
+				3A25E0F02054676600D70921 /* highgui.h */,
 				3A25E0D220545F0B00D70921 /* openCvTut */,
 				3A25E0D120545F0B00D70921 /* Products */,
 			);
@@ -58,6 +65,8 @@
 			isa = PBXGroup;
 			children = (
 				3A25E0D320545F0B00D70921 /* main.cpp */,
+				3AEEB62D20568E28008D04FA /* Fruit.cpp */,
+				3AEEB62E20568E28008D04FA /* Fruit.hpp */,
 			);
 			path = openCvTut;
 			sourceTree = "<group>";
@@ -119,6 +128,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AEEB62F20568E28008D04FA /* Fruit.cpp in Sources */,
 				3A25E0D420545F0B00D70921 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -233,6 +243,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -241,6 +252,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
