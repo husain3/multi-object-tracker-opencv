@@ -146,6 +146,8 @@ void drawObject(vector<Fruit> theFruits, Mat &frame) {
         
         circle(frame, Point(x,y), 10, Scalar(0,0,255));
         putText(frame, intToString(x)+ " , " + intToString(y), Point(x,y+20),1,1,Scalar(0,255,0));
+        
+        putText(frame, theFruits.at(i).getType(), Point(theFruits.at(i).getXPos(), theFruits.at(i).getYPos()-20), 1, 2, theFruits.at(i).getColour());
     }
     
     
@@ -231,9 +233,75 @@ void trackFilteredObject(Mat threshold, Mat HSV, Mat &cameraFeed)
     }
 }
 
+void trackFilteredObject(Fruit theFruit, Mat threshold, Mat HSV, Mat &cameraFeed)
+{
+    vector<Fruit> apples;
+    
+    Mat temp;
+    threshold.copyTo(temp);
+    
+    //these two vectors needed for output of findContours
+    std::vector<std::vector<Point> > contours;
+    std::vector<Vec4i> heirarchy;
+    
+    //find contours of filtered image using OpenCV findContours function
+    findContours(temp, contours, heirarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+    //use moments method to find our filtered object
+    double refArea = 0;
+    bool objectFound = false;
+    
+    if(heirarchy.size() > 0) {
+        int numObjects = heirarchy.size();
+        //if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
+        if(numObjects<MAX_NUM_OBJECTS) {
+            for(int index = 0; index >= 0; index = heirarchy[index][0])
+            {
+                Moments moment = moments((cv::Mat)contours[index]);
+                double area = moment.m00;
+                
+                //if the area is less than 20 px by 20px then it is probably noise
+                
+                
+                /*REVIEW THE FUNCTIONALITY OF CODE FOLLOWING THIS COMMENT BLOCK*/
+                /*if the area is the same as the 3/2 os the image size, probably just a bad filter we only want
+                 the object with the largest area so we save a reference area each iteration and compare it to the
+                 area in the next iteration*/
+                
+                if(area>MIN_OBJECT_AREA)
+                {
+                    Fruit apple;
+                    
+                    apple.setXPos(moment.m10/area);
+                    apple.setYPos(moment.m01/area);
+                    
+                    apple.setType(theFruit.getType());
+                    apple.setColour(theFruit.getColour());
+                    
+                    apples.push_back(apple);
+                    
+                    //x = moment.m10/area;
+                    //y = moment.m01/area;
+                    
+                    
+                    objectFound = true;
+                } else {
+                    objectFound = false;
+                }
+            }
+            //let user know you found an object
+            if(objectFound == true) {
+                //draw object location on screen
+                drawObject(apples, cameraFeed);
+            } else {
+                putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0,50), 1, 2, Scalar(0,0,255), 2);
+            }
+        }
+    }
+}
+
 int main(int argc, const char * argv[]) {
     //if we would like to calibrate our filter values, set to true
-    bool calibrationMode = true;
+    bool calibrationMode = false;
     
     //Matrix to sure each frame of the webcam feed
     Mat cameraFeed;
@@ -293,26 +361,29 @@ int main(int argc, const char * argv[]) {
             //cout << "MAT " << HSV << endl;
         } else {
             
-            Fruit apple, banana, cherry;
+            Fruit apple("apple"), banana, cherry("cherry");
             
-            apple.setHSVmin(Scalar(0,0,0));
-            apple.setHSVmax(Scalar(255,255,255));
+            apple.setHSVmin(Scalar(125,89,86)); //Substituted for BLUE pen ink colour
+            apple.setHSVmax(Scalar(155,256,145)); //Substituted for BLUE pen ink colour
+            
+            cherry.setHSVmin(Scalar(167,111,168)); //Substituted for RED pen ink colour
+            cherry.setHSVmax(Scalar(202,256,256)); //Substituted for RED pen ink colour
             
             //convert frame from BGR to HSV colourspace
             cvtColor(cameraFeed, HSV, CV_BGR2HSV);
             inRange(HSV, apple.getHSVmin(), apple.getHSVmax(), threshold);
             morphOps(threshold);
-            trackFilteredObject(threshold, HSV, cameraFeed);
+            trackFilteredObject(apple, threshold, HSV, cameraFeed);
             
             /*cvtColor(cameraFeed, HSV, CV_BGR2HSV);
             inRange(HSV, banana.getHSVmin(), banana.getHSVmax(), threshold);
             morphOps(threshold);
-            trackFilteredObject(threshold, HSV, cameraFeed);
+            trackFilteredObject(threshold, HSV, cameraFeed);*/
             
             cvtColor(cameraFeed, HSV, CV_BGR2HSV);
             inRange(HSV, cherry.getHSVmin(), cherry.getHSVmax(), threshold);
             morphOps(threshold);
-            trackFilteredObject(threshold, HSV, cameraFeed);*/
+            trackFilteredObject(cherry, threshold, HSV, cameraFeed);
         }
         
         //show frames
